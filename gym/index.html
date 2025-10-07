@@ -1,0 +1,739 @@
+<!--
+Gym Website - single-file template (index.html)
+Instructions:
+1. Save this file as `index.html` in a new folder.
+2. Create a subfolder `assets/` (optional) and place your images as `assets/img-1.jpg`, `assets/trainer1.jpg`, `workout-sample.mp4` etc. Or replace image/video src with remote URLs.
+3. Open `index.html` in your browser or serve with a simple static server (e.g. `npx http-server` or Live Server extension).
+4. To deploy: push to GitHub Pages, Netlify or Vercel. See notes at the bottom for deployment & customization tips.
+
+This file contains:
+- Responsive layout (mobile-first)
+- Semantic HTML & accessibility attributes
+- CSS (modern, variables) and small JS for interaction
+- Sections: Hero, About, Programs, Workout Guide (tabs), Diet Plans (tabs), Timings (hours & book/save), Video + Gallery, Trainers, Contact
+- Light gallery modal and video modal
+
+Customize: update texts, replace images, change colors in :root variables.
+-->
+<!doctype html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>FitRise Gym — Your Local Strength & Wellness Hub</title>
+    <meta name="description" content="FitRise Gym - workout guides, diet plans, class timings, trainer profiles, and tutorial videos." />
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=" />
+    <style>
+        /* ------------------------------------------
+       Simple, readable CSS for the gym landing
+       ------------------------------------------ */
+        
+         :root {
+            --bg: #0b1020;
+            --card: #0f1724;
+            --muted: #94a3b8;
+            --accent: #ff6b6b;
+            --accent-2: #ffb86b;
+            --glass: rgba(255, 255, 255, 0.04);
+            --radius: 14px;
+            --max-width: 1100px;
+            --transition: 240ms ease;
+            color-scheme: dark;
+        }
+        
+        * {
+            box-sizing: border-box
+        }
+        
+        html,
+        body {
+            height: 100%
+        }
+        
+        body {
+            margin: 0;
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+            background: linear-gradient(180deg, #071022 0%, #071428 100%);
+            color: #e6eef8;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            line-height: 1.45;
+            padding: 24px 18px;
+            display: flex;
+            justify-content: center;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: var(--max-width)
+        }
+        /* Header */
+        
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 12px 0
+        }
+        
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px
+        }
+        
+        .logo {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: #08101b
+        }
+        
+        nav {
+            display: flex;
+            gap: 12px;
+            align-items: center
+        }
+        
+        nav a {
+            color: var(--muted);
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: 10px;
+            transition: var(--transition)
+        }
+        
+        nav a:hover {
+            color: var(--accent);
+            background: var(--glass)
+        }
+        
+        .cta {
+            background: linear-gradient(90deg, var(--accent), var(--accent-2));
+            color: #07101a;
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-weight: 700
+        }
+        /* mobile nav */
+        
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            padding: 8px;
+            border-radius: 8px
+        }
+        /* Hero */
+        
+        .hero {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            padding: 28px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent);
+            border-radius: var(--radius);
+            box-shadow: 0 8px 30px rgba(2, 6, 23, 0.6)
+        }
+        
+        .hero-left {
+            padding: 6px
+        }
+        
+        h1 {
+            margin: 0 0 8px;
+            font-size: clamp(20px, 4vw, 36px)
+        }
+        
+        p.lead {
+            color: var(--muted);
+            margin: 0 0 16px
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 12px
+        }
+        
+        .buttons a {
+            padding: 10px 14px;
+            border-radius: 10px;
+            text-decoration: none
+        }
+        
+        .btn-ghost {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.04)
+        }
+        /* Cards */
+        
+        .grid {
+            display: grid;
+            gap: 18px
+        }
+        
+        .two-col {
+            grid-template-columns: 1fr 360px
+        }
+        
+        .card {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+            padding: 16px;
+            border-radius: 12px
+        }
+        
+        .programs {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap
+        }
+        
+        .prog {
+            flex: 1 1 140px;
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0.18), rgba(255, 255, 255, 0.02));
+            padding: 12px;
+            border-radius: 10px
+        }
+        /* Workout + Diet Tabs */
+        
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px
+        }
+        
+        .tabs button {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            padding: 8px 10px;
+            border-radius: 10px;
+            color: var(--muted)
+        }
+        
+        .tabs button.active {
+            background: linear-gradient(90deg, var(--accent), var(--accent-2));
+            color: #07101a;
+            border: none
+        }
+        /* Timings table */
+        
+        table {
+            width: 100%;
+            border-collapse: collapse
+        }
+        
+        th,
+        td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.03)
+        }
+        /* Gallery */
+        
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 8px
+        }
+        
+        .gallery img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 10px;
+            cursor: pointer
+        }
+        /* Trainers */
+        
+        .trainers {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 12px
+        }
+        
+        .trainer {
+            padding: 12px;
+            border-radius: 10px;
+            text-align: center
+        }
+        
+        .trainer img {
+            width: 96px;
+            height: 96px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 8px
+        }
+        /* Contact */
+        
+        form {
+            display: grid;
+            gap: 10px
+        }
+        
+        input,
+        textarea,
+        select {
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            background: transparent;
+            color: inherit
+        }
+        
+        button {
+            padding: 10px;
+            border-radius: 10px;
+            border: none;
+            background: var(--accent);
+            color: #07101a;
+            font-weight: 700
+        }
+        /* Modal (for images & video) */
+        
+        .modal {
+            position: fixed;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 60
+        }
+        
+        .modal.open {
+            display: flex
+        }
+        
+        .modal .dialog {
+            max-width: 900px;
+            width: 92%;
+            background: #071424;
+            padding: 14px;
+            border-radius: 12px
+        }
+        
+        .modal img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px
+        }
+        
+        .close {
+            position: absolute;
+            right: 18px;
+            top: 18px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 8px
+        }
+        
+        footer {
+            margin-top: 18px;
+            color: var(--muted);
+            text-align: center;
+            font-size: 13px
+        }
+        /* Responsive */
+        
+        @media (max-width:900px) {
+            .two-col {
+                grid-template-columns: 1fr
+            }
+            nav {
+                display: none
+            }
+            .menu-toggle {
+                display: block
+            }
+        }
+        /* small helpers */
+        
+        .muted {
+            color: var(--muted)
+        }
+        
+        .pill {
+            display: inline-block;
+            padding: 6px 8px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.03);
+            font-size: 13px
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <div class="brand">
+                <div class="logo" aria-hidden="true">FR</div>
+                <div>
+                    <strong>FitRise Gym</strong>
+                    <div class="muted" style="font-size:12px">Strength • Cardio • Wellness</div>
+                </div>
+            </div>
+            <nav aria-label="Main navigation">
+                <a href="#about">About</a>
+                <a href="#programs">Programs</a>
+                <a href="#guide">Guide</a>
+                <a href="#diet">Diet</a>
+                <a href="#timings">Timings</a>
+                <a href="#contact">Contact</a>
+            </nav>
+
+            <div style="display:flex;gap:8px;align-items:center">
+                <button class="menu-toggle" aria-label="Open menu">☰</button>
+                <a class="cta" href="#contact">Join Now</a>
+            </div>
+        </header>
+
+        <!-- Hero -->
+        <section class="hero card" aria-labelledby="hero-title">
+            <div class="hero-left">
+                <h1 id="hero-title">Train smarter. Get results. Feel stronger.</h1>
+                <p class="lead">Personalized plans, expert trainers, and a friendly atmosphere — everything you need to reach your fitness goals.</p>
+                <div class="buttons">
+                    <a class="cta" href="#guide">Get Started</a>
+                    <a class="btn-ghost" href="#timings">See Timings</a>
+                </div>
+            </div>
+
+            <div style="margin-top:12px;display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+                <div class="pill">Personal Training</div>
+                <div class="pill">Group Classes</div>
+                <div class="pill">Diet Plans</div>
+                <div class="pill">Open 7 Days</div>
+            </div>
+        </section>
+
+        <!-- Main grid -->
+        <main class="grid two-col" style="margin-top:16px">
+
+            <!-- Left column (content) -->
+            <div style="display:grid;gap:16px">
+
+                <!-- About -->
+                <section id="about" class="card">
+                    <h2>About FitRise</h2>
+                    <p class="muted">FitRise is a community gym focused on evidence-based training, real coaches, and realistic progress. We welcome beginners and advanced athletes. Below you'll find quick programs, a weekly schedule, diet templates, and video tutorials.</p>
+                </section>
+
+                <!-- Programs -->
+                <section id="programs" class="card">
+                    <h3>Programs We Offer</h3>
+                    <div class="programs">
+                        <div class="prog">
+                            <strong>Strength Training</strong>
+                            <div class="muted" style="font-size:13px">Full-body and split routines for progressive overload.</div>
+                        </div>
+                        <div class="prog">
+                            <strong>Cardio & Conditioning</strong>
+                            <div class="muted" style="font-size:13px">HIIT, steady-state cardio and sport-specific conditioning.</div>
+                        </div>
+                        <div class="prog">
+                            <strong>Mobility & Yoga</strong>
+                            <div class="muted" style="font-size:13px">Improve movement quality and reduce injury risk.</div>
+                        </div>
+                        <div class="prog">
+                            <strong>Personal Training</strong>
+                            <div class="muted" style="font-size:13px">1:1 coaching and tailored plans.</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Guide (Workout plans) -->
+                <section id="guide" class="card">
+                    <h3>Workout Guide</h3>
+                    <div class="tabs" role="tablist" aria-label="Workout difficulty">
+                        <button class="tab-btn active" data-target="beginner" role="tab" aria-selected="true">Beginner</button>
+                        <button class="tab-btn" data-target="intermediate" role="tab" aria-selected="false">Intermediate</button>
+                        <button class="tab-btn" data-target="advanced" role="tab" aria-selected="false">Advanced</button>
+                    </div>
+
+                    <div class="tab-content">
+                        <div id="beginner" class="tab-panel">
+                            <h4>4-week Beginner Routine (3 days/week)</h4>
+                            <ol>
+                                <li>Day A — Squat 3×8, Bench Press 3×8, Row 3×8</li>
+                                <li>Day B — Deadlift 3×5, Overhead Press 3×8, Pull-ups (assisted) 3×6</li>
+                                <li>Day C — Accessory: Lunges 3×10, Dumbbell Press 3×10, Plank 3×45s</li>
+                            </ol>
+                            <p class="muted">Progress by adding 2–5% load per week or perform extra reps when possible. Focus on form and recovery.</p>
+                        </div>
+
+                        <div id="intermediate" class="tab-panel" style="display:none">
+                            <h4>Intermediate Split (4–5 days)</h4>
+                            <ul>
+                                <li>Upper/Lower split with 4 compound lifts and 2 accessory movements per session.</li>
+                                <li>Include 1 high-intensity interval session and 1 mobility day.</li>
+                            </ul>
+                        </div>
+
+                        <div id="advanced" class="tab-panel" style="display:none">
+                            <h4>Advanced (5–6 days)</h4>
+                            <p class="muted">Periodized plan with heavy, volume and speed days; includes peaking and deload weeks.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Diet Plans -->
+                <section id="diet" class="card">
+                    <h3>Diet Templates</h3>
+                    <div class="tabs" role="tablist" aria-label="Diet plans">
+                        <button class="diet-btn active" data-target="maintenance">Maintenance</button>
+                        <button class="diet-btn" data-target="cutting">Cutting</button>
+                        <button class="diet-btn" data-target="bulking">Bulking</button>
+                    </div>
+
+                    <div class="diet-content">
+                        <div id="maintenance" class="diet-panel">
+                            <h4>Maintenance Sample</h4>
+                            <p class="muted">~ Balanced macros to hold current weight</p>
+                            <ul>
+                                <li><strong>Breakfast:</strong> Oats + milk, banana, 2 boiled eggs</li>
+                                <li><strong>Lunch:</strong> Grilled chicken, brown rice, mixed veggies</li>
+                                <li><strong>Snack:</strong> Greek yogurt + nuts</li>
+                                <li><strong>Dinner:</strong> Fish, sweet potato, salad</li>
+                            </ul>
+                        </div>
+
+                        <div id="cutting" class="diet-panel" style="display:none">
+                            <h4>Cutting Sample</h4>
+                            <p class="muted">~ 10–20% calorie deficit, higher protein to preserve muscle</p>
+                            <ul>
+                                <li>Protein-focused meals, smaller carb portions, vegetables and fibrous foods.</li>
+                            </ul>
+                        </div>
+
+                        <div id="bulking" class="diet-panel" style="display:none">
+                            <h4>Bulking Sample</h4>
+                            <p class="muted">~ 10–20% calorie surplus, enough protein and progressive overload</p>
+                            <ul>
+                                <li>Higher carbs, energy-dense meals, snacks between meals.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Video + Gallery -->
+                <section class="card">
+                    <h3>Workout Video & Gallery</h3>
+                    <p class="muted">Click to watch or preview images. Replace the video with your own YouTube ID or local MP4.</p>
+
+                    <!-- Video preview (click to open modal) -->
+                    <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+                        <div style="flex:1;min-width:240px">
+                            <div style="position:relative;padding-top:56.25%;border-radius:10px;overflow:hidden;background:#000;object-fit:cover;">
+                                <!-- Replace VIDEO_ID with your YouTube ID OR change to a local <video> tag -->
+                                <iframe src="https://assets.mixkit.co/active_storage/video_items/100546/1725385655/100546-video-720.mp4" title="Sample Workout" style="position:absolute;inset:0;width:100%;height:100%;border:0" allowfullscreen loading="lazy"></iframe>
+                            </div>
+                        </div>
+
+                        <div style="flex:1;min-width:220px">
+                            <div class="gallery">
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT3iInjfB9ciVgxdoHTf00MReSnaF0l8i1J1Q&s" alt=" Gym weights " loading="lazy " tabindex="0 ">
+                                <img src="https://plusfitness-production.s3.amazonaws.com/media/images/Blog__Media_poSxAvx.width-1200.png " alt="Training " loading="lazy " tabindex="0 ">
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRVaqkXhOpym01MS0w9MZk7EZMe6WJQUXrwZw&s" alt=" Yoga " loading="lazy " tabindex="0 ">
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Contact -->
+                <section id="contact " class="card ">
+                    <h3>Contact & Trial Signup</h3>
+                    <form id="contactForm ">
+                        <input id="name " name="name " placeholder="Your name " required />
+                        <input id="email " name="email " type="email " placeholder="Email " required />
+                        <select id="interest " name="interest ">
+          <option>Personal Training</option>
+          <option>Group Classes</option>
+          <option>Diet Consultation</option>
+        </select>
+                        <textarea id="message " name="message " rows="3 " placeholder="Message (optional) "></textarea>
+                        <div style="display:flex;gap:8px;align-items:center ">
+                            <button type="submit ">Request Trial</button>
+                            <div class="muted " style="font-size:13px ">We'll follow up via email.</div>
+                        </div>
+                    </form>
+                </section>
+
+            </div>
+            <!-- end left column -->
+
+            <!-- Right column (aside) -->
+            <aside style="display:grid;gap:16px ">
+
+                <!-- Timings -->
+                <div id="timings " class="card ">
+                    <h4>Gym Timings</h4>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Day</th>
+                                <th>Hours</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Mon–Fri</td>
+                                <td>6:00 AM — 10:00 PM</td>
+                                <td><button class="save-slot " data-slot="weekday-morning ">Save</button></td>
+                            </tr>
+                            <tr>
+                                <td>Saturday</td>
+                                <td>7:00 AM — 8:00 PM</td>
+                                <td><button class="save-slot " data-slot="sat ">Save</button></td>
+                            </tr>
+                            <tr>
+                                <td>Sunday</td>
+                                <td>8:00 AM — 6:00 PM</td>
+                                <td><button class="save-slot " data-slot="sun ">Save</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p class="muted " style="font-size:13px;margin-top:8px ">Tip: Save a preferred slot to your browser (local preview only).</p>
+                </div>
+
+                <!-- Trainers -->
+                <div class="card ">
+                    <h4>Our Trainers</h4>
+                    <div class="trainers ">
+                        <div class="trainer ">
+                            <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=400&q=60 " alt="Trainer Anna ">
+                            <strong>Anna K.</strong>
+                            <div class="muted " style="font-size:13px ">Strength & Conditioning</div>
+                        </div>
+                        <div class="trainer ">
+                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR74rWFDU-ex5GXHeu5Z4xu1tWVhfFDGKU-kA&s " alt="Trainer Rahul ">
+                            <strong>Rahul S.</strong>
+                            <div class="muted " style="font-size:13px ">Nutrition Coach</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick tips -->
+                <div class="card ">
+                    <h4>Quick Tips</h4>
+                    <ul class="muted " style="font-size:14px ">
+                        <li>Warm up 5–10 minutes before heavy sets.</li>
+                        <li>Prioritize sleep and protein to recover.</li>
+                        <li>Track progress — add small increments weekly.</li>
+                    </ul>
+                </div>
+
+            </aside>
+
+        </main>
+
+        <footer>
+            <div class="muted ">© FitRise Gym • Example template — customize for your brand.</div>
+        </footer>
+
+        <!-- Modal for images/videos -->
+        <div id="modal " class="modal " role="dialog " aria-modal="true " aria-hidden="true ">
+            <div class="dialog " role="document " style="position:relative ">
+                <button class="close " aria-label="Close modal ">✕</button>
+                <div id="modal-body "></div>
+            </div>
+        </div>
+
+    </div>
+    <!-- container -->
+    <script>
+        // Small interactive JS: mobile menu, tabs, gallery modal, form handling, save slot
+        (function() {
+                // Menu toggle (show native nav by toggling class)
+                const menuToggle = document.querySelector('.menu-toggle');
+                const nav = document.querySelector('nav');
+                menuToggle ? .addEventListener('click', () => {
+                    const shown = nav.style.display === 'flex';
+                    nav.style.display = shown ? 'none' : 'flex';
+                });
+
+                // Tabs for workout
+                function makeTabs(selector, btnClass) {
+                    const buttons = Array.from(document.querySelectorAll(selector + ' .' + btnClass));
+                    buttons.forEach(btn => {
+                        btn.addEventListener('click', () => {
+                            // deactivate
+                            buttons.forEach(b => {
+                                b.classList.remove('active');
+                                b.setAttribute('aria-selected', 'false')
+                            });
+                            btn.classList.add('active');
+                            btn.setAttribute('aria-selected', 'true');
+                            const panels = document.querySelectorAll(selector + ' .tab-panel, ' + selector + ' .diet-panel');
+                            panels.forEach(p => p.style.display = 'none');
+                            const target = document.getElementById(btn.dataset.target);
+                            if (target) target.style.display = '';
+                        });
+                    });
+                }
+                makeTabs('#guide', 'tab-btn');
+                makeTabs('#diet', 'diet-btn');
+
+                // Gallery modal
+                const modal = document.getElementById('modal');
+                const modalBody = document.getElementById('modal-body');
+                const closeBtn = modal.querySelector('.close');
+
+                function openModal(content) {
+                    modalBody.innerHTML = '';
+                    modalBody.appendChild(content);
+                    modal.classList.add('open');
+                    modal.setAttribute('aria-hidden', 'false');
+                }
+
+                function closeModal() {
+                    modal.classList.remove('open');
+                    modal.setAttribute('aria-hidden', 'true');
+                    modalBody.innerHTML = '';
+                }
+                closeBtn.addEventListener('click', closeModal);
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) closeModal();
+                });
+
+                document.querySelectorAll('.gallery img').forEach(img => {
+                    img.addEventListener('click', () => {
+                        const clone = img.cloneNode();
+                        clone.style.width = '100%';
+                        clone.style.height = 'auto';
+                        openModal(clone);
+                    });
+                    img.addEventListener('keypress', (e) => {
+                        if (e.key === 'Enter') img.click();
+                    });
+                });
+
+                // Save preferred timing to localStorage
+                document.querySelectorAll('.save-slot').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const slot = btn.dataset.slot;
+                        localStorage.setItem('fitrise-preferred-slot', slot);
+                        btn.textContent = 'Saved';
+                        setTimeout(() => btn.textContent = 'Save', 1500);
+                    });
+                });
+
+                // Contact form (demo-only -> no backend)
+                const form = document.getElementById('contactForm');
+                form.addEventListener('submit', (e) => {
+                            e.preventDefault();
+                            const name = form.name.value.trim();
+                            const email = form.email.value.trim();
+                            if (!name || !email) {
+                                alert('Please provide name and email.');
+                                return;
+                            }
